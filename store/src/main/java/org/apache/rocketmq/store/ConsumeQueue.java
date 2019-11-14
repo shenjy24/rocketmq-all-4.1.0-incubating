@@ -360,6 +360,7 @@ public class ConsumeQueue {
     }
 
     public boolean flush(final int flushLeastPages) {
+        //刷新存储消息索引的队列
         boolean result = this.mappedFileQueue.flush(flushLeastPages);
         if (isExtReadEnable()) {
             result = result & this.consumeQueueExt.flush(flushLeastPages);

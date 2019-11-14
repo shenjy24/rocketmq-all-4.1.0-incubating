@@ -42,6 +42,7 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicLong;
+
 import org.apache.rocketmq.common.annotation.ImportantField;
 import org.apache.rocketmq.common.help.FAQUrl;
 import org.slf4j.Logger;
@@ -58,7 +59,7 @@ public class MixAll {
     public static final String DEFAULT_NAMESRV_ADDR_LOOKUP = "jmenv.tbsite.net";
     public static final String WS_DOMAIN_NAME = System.getProperty("rocketmq.namesrv.domain", DEFAULT_NAMESRV_ADDR_LOOKUP);
     public static final String WS_DOMAIN_SUBGROUP = System.getProperty("rocketmq.namesrv.domain.subgroup", "nsaddr");
-//    // http://jmenv.tbsite.net:8080/rocketmq/nsaddr
+    //    // http://jmenv.tbsite.net:8080/rocketmq/nsaddr
 //    public static final String WS_ADDR = "http://" + WS_DOMAIN_NAME + ":8080/rocketmq/" + WS_DOMAIN_SUBGROUP;
     public static final String DEFAULT_TOPIC = "TBW102";
     public static final String BENCHMARK_TOPIC = "BenchmarkTest";
@@ -155,20 +156,20 @@ public class MixAll {
      * 安全的写文件
      */
     public static void string2File(final String str, final String fileName) throws IOException {
-    	// 先写入临时文件
+        // 先写入临时文件
         String tmpFile = fileName + ".tmp";
         string2FileNotSafe(str, tmpFile);
-       // 备份之前的文件
+        // 备份之前的文件
         String bakFile = fileName + ".bak";
         String prevContent = file2String(fileName);
         if (prevContent != null) {
             string2FileNotSafe(prevContent, bakFile);
         }
-     
+
         // 删除正式文件
         File file = new File(fileName);
         file.delete();
-        
+
         // 临时文件改为正式文件
         file = new File(tmpFile);
         file.renameTo(new File(fileName));
@@ -424,8 +425,8 @@ public class MixAll {
             return addr.getHostAddress();
         } catch (Throwable e) {
             throw new RuntimeException("InetAddress java.net.InetAddress.getLocalHost() throws UnknownHostException"
-                + FAQUrl.suggestTodo(FAQUrl.UNKNOWN_HOST_EXCEPTION),
-                e);
+                    + FAQUrl.suggestTodo(FAQUrl.UNKNOWN_HOST_EXCEPTION),
+                    e);
         }
     }
 
@@ -447,8 +448,8 @@ public class MixAll {
             return InetAddress.getLocalHost().getHostName();
         } catch (Throwable e) {
             throw new RuntimeException("InetAddress java.net.InetAddress.getLocalHost() throws UnknownHostException"
-                + FAQUrl.suggestTodo(FAQUrl.UNKNOWN_HOST_EXCEPTION),
-                e);
+                    + FAQUrl.suggestTodo(FAQUrl.UNKNOWN_HOST_EXCEPTION),
+                    e);
         }
     }
 

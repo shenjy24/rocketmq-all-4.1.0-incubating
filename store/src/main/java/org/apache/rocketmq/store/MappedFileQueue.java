@@ -461,12 +461,16 @@ public class MappedFileQueue {
 
     public boolean flush(final int flushLeastPages) {
         boolean result = true;
+        //通过偏移量获取文件
         MappedFile mappedFile = this.findMappedFileByOffset(this.flushedWhere, false);
         if (mappedFile != null) {
+            //最后一条消息存储时间
             long tmpTimeStamp = mappedFile.getStoreTimestamp();
-            int offset = mappedFile.flush(flushLeastPages);//刷页
+            //刷页
+            int offset = mappedFile.flush(flushLeastPages);
             long where = mappedFile.getFileFromOffset() + offset;
             result = where == this.flushedWhere;
+            //更新偏移量
             this.flushedWhere = where;
             if (0 == flushLeastPages) {
                 this.storeTimestamp = tmpTimeStamp;

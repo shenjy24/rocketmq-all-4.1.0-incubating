@@ -18,11 +18,13 @@ package org.apache.rocketmq.broker;
 
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.joran.JoranConfigurator;
+
 import java.io.BufferedInputStream;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.Properties;
 import java.util.concurrent.atomic.AtomicInteger;
+
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
@@ -56,7 +58,7 @@ public class BrokerStartup {
         try {
             controller.start();
             String tip = "The broker[" + controller.getBrokerConfig().getBrokerName() + ", "
-                + controller.getBrokerAddr() + "] boot success. serializeType=" + RemotingCommand.getSerializeTypeConfigInThisServer();
+                    + controller.getBrokerAddr() + "] boot success. serializeType=" + RemotingCommand.getSerializeTypeConfigInThisServer();
 
             if (null != controller.getBrokerConfig().getNamesrvAddr()) {
                 tip += " and name server is " + controller.getBrokerConfig().getNamesrvAddr();
@@ -73,7 +75,7 @@ public class BrokerStartup {
     }
 
     public static BrokerController createBrokerController(String[] args) {
-    	//设置版本
+        //设置版本
         System.setProperty(RemotingCommand.REMOTING_VERSION_KEY, Integer.toString(MQVersion.CURRENT_VERSION));
 
         // Socket发送缓冲区大小
@@ -81,34 +83,34 @@ public class BrokerStartup {
             NettySystemConfig.socketSndbufSize = 131072;
         }
 
-     // Socket接收缓冲区大小
+        // Socket接收缓冲区大小
         if (null == System.getProperty(NettySystemConfig.COM_ROCKETMQ_REMOTING_SOCKET_RCVBUF_SIZE)) {
             NettySystemConfig.socketRcvbufSize = 131072;
         }
 
         try {
             //PackageConflictDetect.detectFastjson();    
-        	
-        	// 解析命令行
+
+            // 解析命令行
             Options options = ServerUtil.buildCommandlineOptions(new Options());
             commandLine = ServerUtil.parseCmdLine("mqbroker", args, buildCommandlineOptions(options),
-                new PosixParser());
+                    new PosixParser());
             if (null == commandLine) {
                 System.exit(-1);
             }
 
             // 初始化配置文件
             final BrokerConfig brokerConfig = new BrokerConfig();
-            
+
             //如果我们直接运行的话会报一个错误
             //Please set the ROCKETMQ_HOME variable in your environment to match the location of the RocketMQ installation
-            brokerConfig.setRocketmqHome("D:\\eclipse-workspace\\rocketmq-rocketmq-all-4.1.0-incubating\\rocketmq-rocketmq-all-4.1.0-incubating\\distribution");
+            brokerConfig.setRocketmqHome("D:\\Java\\workspace\\rocketmq-all-4.1.0-incubating\\distribution");
             brokerConfig.setNamesrvAddr("localhost:9876");
-            
+
             final NettyServerConfig nettyServerConfig = new NettyServerConfig();
             final NettyClientConfig nettyClientConfig = new NettyClientConfig();
             nettyServerConfig.setListenPort(10911);
-            
+
             //配置信息
             final MessageStoreConfig messageStoreConfig = new MessageStoreConfig();
 
@@ -142,7 +144,7 @@ public class BrokerStartup {
 
             if (null == brokerConfig.getRocketmqHome()) {
                 System.out.printf("Please set the " + MixAll.ROCKETMQ_HOME_ENV
-                    + " variable in your environment to match the location of the RocketMQ installation");
+                        + " variable in your environment to match the location of the RocketMQ installation");
                 System.exit(-2);
             }
 
@@ -155,9 +157,10 @@ public class BrokerStartup {
                         RemotingUtil.string2SocketAddress(addr); //转换SocketAddress对象
                     }
                 } catch (Exception e) {
+                    //通过异常捕获检验地址格式是否正确
                     System.out.printf(
-                        "The Name Server Address[%s] illegal, please set it as follows, \"127.0.0.1:9876;192.168.0.1:9876\"%n",
-                        namesrvAddr);
+                            "The Name Server Address[%s] illegal, please set it as follows, \"127.0.0.1:9876;192.168.0.1:9876\"%n",
+                            namesrvAddr);
                     System.exit(-3);
                 }
             }
@@ -179,8 +182,9 @@ public class BrokerStartup {
                     break;
             }
 
-         // Master监听Slave请求的端口，默认为服务端口+1
+            // Master监听Slave请求的端口，默认为服务端口+1
             messageStoreConfig.setHaListenPort(nettyServerConfig.getListenPort() + 1);
+
             LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
             JoranConfigurator configurator = new JoranConfigurator();
             configurator.setContext(lc);
@@ -210,10 +214,10 @@ public class BrokerStartup {
             MixAll.printObjectProperties(log, messageStoreConfig);
 
             final BrokerController controller = new BrokerController(//
-                brokerConfig, //
-                nettyServerConfig, //
-                nettyClientConfig, //
-                messageStoreConfig);
+                    brokerConfig, //
+                    nettyServerConfig, //
+                    nettyClientConfig, //
+                    messageStoreConfig);
             // remember all configs to prevent discard
             controller.getConfiguration().registerConfig(properties);
 

@@ -18,11 +18,13 @@ package org.apache.rocketmq.namesrv;
 
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.joran.JoranConfigurator;
+
 import java.io.BufferedInputStream;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.Properties;
 import java.util.concurrent.Callable;
+
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
@@ -40,9 +42,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * 
  * Name server 启动入口
- *
  */
 public class NamesrvStartup {
     public static Properties properties = null;
@@ -53,16 +53,13 @@ public class NamesrvStartup {
     }
 
     /**
-     * 
      * 这里的这个与后面的BrokerStartup有些很像 都是
      * 设置版本
      * socket缓冲区等等
-     * 
-     * 
      */
     public static NamesrvController main0(String[] args) {
-    	
-    	//设置版本
+
+        //设置版本
         System.setProperty(RemotingCommand.REMOTING_VERSION_KEY, Integer.toString(MQVersion.CURRENT_VERSION));
 
         // Socket发送缓冲区大小
@@ -78,7 +75,7 @@ public class NamesrvStartup {
         try {
             //PackageConflictDetect.detectFastjson();
 
-        	// 解析命令行
+            // 解析命令行
             Options options = ServerUtil.buildCommandlineOptions(new Options());
             commandLine = ServerUtil.parseCmdLine("mqnamesrv", args, buildCommandlineOptions(options), new PosixParser());
             if (null == commandLine) {
@@ -88,13 +85,13 @@ public class NamesrvStartup {
 
             // 初始化配置文件
             final NamesrvConfig namesrvConfig = new NamesrvConfig();
-            
+
             //如果我们直接运行的话会报一个错误
             //Please set the ROCKETMQ_HOME variable in your environment to match the location of the RocketMQ installation
-           namesrvConfig.setRocketmqHome("D:\\eclipse-workspace\\rocketmq-rocketmq-all-4.1.0-incubating\\rocketmq-rocketmq-all-4.1.0-incubating\\distribution");
+            namesrvConfig.setRocketmqHome("D:\\Java\\workspace\\rocketmq-all-4.1.0-incubating\\distribution");
             final NettyServerConfig nettyServerConfig = new NettyServerConfig();
             nettyServerConfig.setListenPort(9876);
-            
+
             // 指定配置文件
             if (commandLine.hasOption('c')) {
                 String file = commandLine.getOptionValue('c');
@@ -137,7 +134,7 @@ public class NamesrvStartup {
             MixAll.printObjectProperties(log, nettyServerConfig);
 
             // 服务控制对象
-            final NamesrvController controller = new NamesrvController(namesrvConfig, nettyServerConfig); 
+            final NamesrvController controller = new NamesrvController(namesrvConfig, nettyServerConfig);
 
             // remember all configs to prevent discard
             controller.getConfiguration().registerConfig(properties);

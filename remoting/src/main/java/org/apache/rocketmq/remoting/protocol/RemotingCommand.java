@@ -41,14 +41,14 @@ public class RemotingCommand {
     public static final String SERIALIZE_TYPE_ENV = "ROCKETMQ_SERIALIZE_TYPE";
     public static final String REMOTING_VERSION_KEY = "rocketmq.remoting.version";
     private static final Logger log = LoggerFactory.getLogger(RemotingHelper.ROCKETMQ_REMOTING);
-   
+
     private static final int RPC_TYPE = 0; // 0, REQUEST_COMMAND
     // 1, RESPONSE_COMMAND
-    
+
     private static final int RPC_ONEWAY = 1; // Oneway bit
 
     private static final Map<Class<? extends CommandCustomHeader>, Field[]> CLASS_HASH_MAP =
-        new HashMap<Class<? extends CommandCustomHeader>, Field[]>();
+            new HashMap<Class<? extends CommandCustomHeader>, Field[]>();
     private static final Map<Class, String> CANONICAL_NAME_CACHE = new HashMap<Class, String>();
     // 1, Oneway
     // 1, RESPONSE_COMMAND
@@ -77,6 +77,7 @@ public class RemotingCommand {
             }
         }
     }
+
     /**
      * Header 部分
      */
@@ -97,7 +98,7 @@ public class RemotingCommand {
 
     protected RemotingCommand() {
     }
-    
+
     /**
      * 只有通信层内部会调用，业务不会调用
      */
@@ -127,8 +128,7 @@ public class RemotingCommand {
     }
 
     //构建
-    public static RemotingCommand createResponseCommand(int code, String remark,
-        Class<? extends CommandCustomHeader> classHeader) {
+    public static RemotingCommand createResponseCommand(int code, String remark, Class<? extends CommandCustomHeader> classHeader) {
         RemotingCommand cmd = new RemotingCommand();
         cmd.markResponseType();
         cmd.setCode(code);
@@ -159,7 +159,7 @@ public class RemotingCommand {
     }
 
     //解码（Decode）、反序列化（deserialization）把从网络、磁盘等读取的字节数组还原成原始对象（通常是原始对象的拷贝），以方便后续的业务逻辑操作。
-  //在调用decode()方法解码之前，会调用NettyDecoder 类的decode()方法，在上述构造方法中，会先去掉报文的前4个字节，这4个字节是存储的后面报文的长度.
+    //在调用decode()方法解码之前，会调用NettyDecoder 类的decode()方法，在上述构造方法中，会先去掉报文的前4个字节，这4个字节是存储的后面报文的长度.
     public static RemotingCommand decode(final ByteBuffer byteBuffer) {
         int length = byteBuffer.limit();  //获取字节缓冲区的整个长度，这个长度等于通信协议格式的2、3、4段的总长度
         int oriHeaderLen = byteBuffer.getInt(); //从缓冲区中读取4个字节的int类型的数据值 ，这个值就是报文头部的长度
@@ -188,7 +188,7 @@ public class RemotingCommand {
     private static RemotingCommand headerDecode(byte[] headerData, SerializeType type) {
         switch (type) {
             case JSON:
-            	//数据转换成RemotingCommand 对象
+                //数据转换成RemotingCommand 对象
                 RemotingCommand resultJson = RemotingSerializable.decode(headerData, RemotingCommand.class);
                 resultJson.setSerializeTypeCurrentRPC(type);
                 return resultJson;
@@ -233,7 +233,7 @@ public class RemotingCommand {
         byte[] result = new byte[4];
 
         //这个是把int 转换成字节
-        
+
         result[0] = type.getCode();
         result[1] = (byte) ((source >> 16) & 0xFF);
         result[2] = (byte) ((source >> 8) & 0xFF);
@@ -255,11 +255,9 @@ public class RemotingCommand {
     }
 
     /**
-     * 
-     *解码过程
+     * 解码过程
      */
-    public CommandCustomHeader decodeCommandCustomHeader(
-        Class<? extends CommandCustomHeader> classHeader) throws RemotingCommandException {
+    public CommandCustomHeader decodeCommandCustomHeader(Class<? extends CommandCustomHeader> classHeader) throws RemotingCommandException {
         CommandCustomHeader objectHeader;
         try {
             objectHeader = classHeader.newInstance();
@@ -437,7 +435,7 @@ public class RemotingCommand {
     public ByteBuffer encodeHeader() {
         return encodeHeader(this.body != null ? this.body.length : 0);
     }
-    
+
     /**
      * 只打包Header，body部分独立传输
      */
@@ -570,8 +568,8 @@ public class RemotingCommand {
     @Override
     public String toString() {
         return "RemotingCommand [code=" + code + ", language=" + language + ", version=" + version + ", opaque=" + opaque + ", flag(B)="
-            + Integer.toBinaryString(flag) + ", remark=" + remark + ", extFields=" + extFields + ", serializeTypeCurrentRPC="
-            + serializeTypeCurrentRPC + "]";
+                + Integer.toBinaryString(flag) + ", remark=" + remark + ", extFields=" + extFields + ", serializeTypeCurrentRPC="
+                + serializeTypeCurrentRPC + "]";
     }
 
     public SerializeType getSerializeTypeCurrentRPC() {

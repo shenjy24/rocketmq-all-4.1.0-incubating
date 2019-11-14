@@ -385,6 +385,7 @@ public class MappedFile extends ReferenceResource {
     }
 
     private boolean isAbleToFlush(final int flushLeastPages) {
+        //最新的刷新位置
         int flush = this.flushedPosition.get();
         int write = getReadPosition();
 
