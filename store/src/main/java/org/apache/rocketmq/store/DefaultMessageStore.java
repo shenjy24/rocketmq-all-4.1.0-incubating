@@ -212,6 +212,8 @@ public class DefaultMessageStore implements MessageStore {
         // this.indexService.start();
         // 在构造函数已经start了。
         // this.dispatchMessageService.start();
+
+        //消费队列刷盘线程
         this.flushConsumeQueueService.start();
         this.commitLog.start();
         this.storeStatsService.start();

@@ -662,6 +662,7 @@ public class BrokerController {
     }
 
     public void start() throws Exception {
+        //消息存储服务
         if (this.messageStore != null) {
             this.messageStore.start();
         }

@@ -455,7 +455,8 @@ public class DefaultMQProducerImpl implements MQProducerInner {
             String[] brokersSent = new String[timesTotal];
             for (; times < timesTotal; times++) {
                 String lastBrokerName = null == mq ? null : mq.getBrokerName(); //第一次的确是null 但是如果第二次呢？ 所以这里存在的意义
-                MessageQueue tmpmq = this.selectOneMessageQueue(topicPublishInfo, lastBrokerName);//选择一个queue
+                //轮询选择一个queue
+                MessageQueue tmpmq = this.selectOneMessageQueue(topicPublishInfo, lastBrokerName);
                 if (tmpmq != null) {
                     mq = tmpmq;
                     brokersSent[times] = mq.getBrokerName();
@@ -595,7 +596,7 @@ public class DefaultMQProducerImpl implements MQProducerInner {
         final TopicPublishInfo topicPublishInfo, //
         final long timeout) throws MQClientException, RemotingException, MQBrokerException, InterruptedException {
         
-    	// 获取 broker地址
+    	// 获取broker集群中的主broker地址
     	String brokerAddr = this.mQClientFactory.findBrokerAddressInPublish(mq.getBrokerName());
         if (null == brokerAddr) {
             tryToFindTopicPublishInfo(mq.getTopic());
@@ -610,7 +611,7 @@ public class DefaultMQProducerImpl implements MQProducerInner {
             try {
                 //for MessageBatch,ID has been set in the generating process
                 if (!(msg instanceof MessageBatch)) {
-                    MessageClientIDSetter.setUniqID(msg);//设置设置UNIQ_id，所以当看见msgId的时候为什么解析不一样了懂了吧
+                    MessageClientIDSetter.setUniqID(msg);//设置UNIQ_id，所以当看见msgId的时候为什么解析不一样了懂了吧
                 }
 
                 int sysFlag = 0; //又是根据位来进行每位是啥的判断
